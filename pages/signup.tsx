@@ -1,101 +1,63 @@
 // pages/signup.tsx
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState } from "react"
+import Link from "next/link"
 
 export default function Signup() {
-  const router = useRouter();
-  const [showOptions, setShowOptions] = useState(false);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  // 1) 처음엔 “회원가입하기”만 보임
-  // 2) 눌러야 소셜/이메일 버튼이 보임
-  const handleStart = () => {
-    setShowOptions(true);
-  };
-
-  // 소셜 로그인 핸들러 예시
-  const handleKakao = () => {
-    // TODO: 카카오 OAuth 시작
-    window.location.href = "/api/auth/kakao"; 
-  };
-  const handleNaver = () => {
-    // TODO: 네이버 OAuth 시작
-    window.location.href = "/api/auth/naver";
-  };
-  const handleEmail = () => {
-    router.push("/signup/email");
-  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // TODO: Firebase 등으로 회원가입 로직 구현
+    console.log("가입 요청:", { email, password })
+  }
 
   return (
-    <div style={{ padding: 24, maxWidth: 360, margin: "auto", textAlign: "center" }}>
-      <h1>로그인 / 가입</h1>
-      <p style={{ fontWeight: 700, fontSize: 18 }}>
-        지금 가입하면 최대 혜택!<br/>
-        특별 크레딧과 웰컴 쿠폰 증정
-      </p>
-      <img
-        src="/welcome-cat.png"
-        alt="환영 이미지"
-        style={{ width: "100%", borderRadius: 8, margin: "16px 0" }}
-      />
-
-      {!showOptions ? (
+    <div style={{
+      maxWidth: "400px",
+      margin: "4rem auto",
+      padding: "1rem",
+      border: "1px solid #ddd",
+      borderRadius: "0.5rem",
+      textAlign: "center"
+    }}>
+      <h1 style={{ marginBottom: "1rem" }}>회원가입</h1>
+      <form onSubmit={handleSubmit} style={{ display: "grid", gap: "1rem" }}>
+        <input
+          type="email"
+          placeholder="이메일"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          style={{ padding: "0.5rem", fontSize: "1rem" }}
+        />
+        <input
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+          style={{ padding: "0.5rem", fontSize: "1rem" }}
+        />
         <button
-          onClick={handleStart}
+          type="submit"
           style={{
-            width: "100%", padding: 12, background: "#FFCD00",
-            color: "#000", border: "none", borderRadius: 4, fontSize: 16
+            padding: "0.75rem",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+            fontSize: "1rem",
+            borderRadius: "0.375rem",
+            cursor: "pointer"
           }}
         >
-          이메일로 시작하기
+          가입하기
         </button>
-      ) : (
-        <>
-          <button
-            onClick={handleKakao}
-            style={{
-              width: "100%",
-              padding: 12,
-              background: "#FEE500",
-              color: "#000",
-              border: "none",
-              borderRadius: 4,
-              fontSize: 16,
-              marginBottom: 8,
-            }}
-          >
-            🗨️ 카카오로 3초만에 시작하기
-          </button>
-          <button
-            onClick={handleNaver}
-            style={{
-              width: "100%",
-              padding: 12,
-              background: "#03C75A",
-              color: "#fff",
-              border: "none",
-              borderRadius: 4,
-              fontSize: 16,
-              marginBottom: 8,
-            }}
-          >
-            🅽 네이버로 시작하기
-          </button>
-          <button
-            onClick={handleEmail}
-            style={{
-              width: "100%",
-              padding: 12,
-              background: "#fff",
-              color: "#333",
-              border: "1px solid #ccc",
-              borderRadius: 4,
-              fontSize: 16,
-            }}
-          >
-            이메일로 시작하기
-          </button>
-        </>
-      )}
+      </form>
+      <p style={{ marginTop: "1rem" }}>
+        이미 계정이 있으신가요?{" "}
+        <Link href="/signin"><a style={{ color: "#007BFF" }}>로그인</a></Link>
+      </p>
     </div>
-  );
+  )
 }
