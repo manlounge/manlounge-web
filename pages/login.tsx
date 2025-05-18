@@ -1,13 +1,18 @@
 // pages/login.tsx
 import { useState, useEffect } from "react";
 import { auth } from "../firebase/firebaseConfig";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  ConfirmationResult
+} from "firebase/auth";
 import { useRouter } from "next/router";
 
-// 글로벌 타입 선언: window.recaptchaVerifier 사용을 위해
+// 글로벌 타입 선언: window.recaptchaVerifier, window.confirmationResult 사용을 위해
 declare global {
   interface Window {
     recaptchaVerifier: RecaptchaVerifier;
+    confirmationResult: ConfirmationResult;
   }
 }
 
@@ -37,6 +42,7 @@ export default function Login() {
         phone,
         appVerifier
       );
+      window.confirmationResult = confirmationResult;
       setVerificationId(confirmationResult.verificationId);
       alert("인증 코드가 전송되었습니다.");
     } catch (error) {
@@ -47,15 +53,11 @@ export default function Login() {
 
   // 3. OTP 확인 및 로그인
   const verifyCode = async () => {
-    if (!verificationId) return;
+    if (!window.confirmationResult) return;
     try {
-      // Firebase Web v9 모듈형 API용 credential 확인
-      const credential = auth?.currentUser
-        ? auth.currentUser
-        : null;
-      await credential; // (실제 앱에선 confirmationResult.confirm(otp) 방식으로 처리)
-      // 임시로 OTP 확인 로직 대신 바로 로그인 처리
-      router.push("/");
+      await window.confirmationResult.confirm(otp);
+      // 인증 성공 시 ID/PW 설정 페이지로 이동
+      router.push("/set-credentials");
     } catch (error) {
       console.error(error);
       alert("인증에 실패했습니다.");
@@ -75,7 +77,15 @@ export default function Login() {
       />
       <button
         onClick={sendCode}
-        style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem", background: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
+        style={{
+          width: "100%",
+          padding: "0.5rem",
+          marginBottom: "1rem",
+          background: "#007BFF",
+          color: "#fff",
+          border: "none",
+          borderRadius: "4px"
+        }}
       >
         코드 보내기
       </button>
@@ -91,9 +101,16 @@ export default function Login() {
           />
           <button
             onClick={verifyCode}
-            style={{ width: "100%", padding: "0.5rem", background: "#007BFF", color: "#fff", border: "none", borderRadius: "4px" }}
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              background: "#007BFF",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px"
+            }}
           >
-            로그인
+            인증 확인
           </button>
         </>
       )}
