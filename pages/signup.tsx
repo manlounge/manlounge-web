@@ -13,7 +13,7 @@ export default function Signup() {
       textAlign: 'center'
     }}>
       <h1 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
-        지금 가입하면 최대 혜택!
+        성인 남성만 가입할 수 있어요
       </h1>
 
       <button
