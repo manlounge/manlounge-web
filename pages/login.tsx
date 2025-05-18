@@ -1,122 +1,96 @@
 // pages/login.tsx
 import { useState, useEffect } from "react";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
-import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  ConfirmationResult
-} from "firebase/auth";
 import { useRouter } from "next/router";
-
-// 글로벌 타입 선언: window.recaptchaVerifier, window.confirmationResult 사용을 위해
-declare global {
-  interface Window {
-    recaptchaVerifier: RecaptchaVerifier;
-    confirmationResult: ConfirmationResult;
-  }
-}
 
 export default function Login() {
   const router = useRouter();
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [verificationId, setVerificationId] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [initializing, setInitializing] = useState(true);
 
-  // 1. ReCAPTCHA 렌더러 초기화 (invisible)
+  // 이미 로그인된 상태면 홈으로
   useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        { size: "invisible" },
-        auth
-      );
-    }
-  }, []);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) router.replace("/");
+      else setInitializing(false);
+    });
+    return () => unsub();
+  }, [router]);
 
-  // 2. SMS 코드 전송
-  const sendCode = async () => {
+  const handleEmailLogin = async () => {
     try {
-      const appVerifier = window.recaptchaVerifier;
-      const confirmationResult = await signInWithPhoneNumber(
-        auth,
-        phone,
-        appVerifier
-      );
-      window.confirmationResult = confirmationResult;
-      setVerificationId(confirmationResult.verificationId);
-      alert("인증 코드가 전송되었습니다.");
-    } catch (error) {
-      console.error(error);
-      alert("코드 전송에 실패했습니다.");
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/");
+    } catch (e: any) {
+      alert("로그인 실패: " + e.message);
     }
   };
 
-  // 3. OTP 확인 및 로그인
-  const verifyCode = async () => {
-    if (!window.confirmationResult) return;
-    try {
-      await window.confirmationResult.confirm(otp);
-      // 인증 성공 시 ID/PW 설정 페이지로 이동
-      router.push("/set-credentials");
-    } catch (error) {
-      console.error(error);
-      alert("인증에 실패했습니다.");
-    }
+  const handleSocial = (path: string) => {
+    window.location.href = path;
   };
+
+  if (initializing) return <p>로딩 중...</p>;
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "400px", margin: "auto" }}>
-      <h2>휴대폰 번호로 로그인</h2>
+    <div style={{ padding: "2rem", maxWidth: "400px", margin: "auto", textAlign: "center" }}>
+      <h2>로그인</h2>
 
+      {/* 소셜 로그인 버튼 */}
+      <button
+        onClick={() => handleSocial("/api/auth/kakao")}
+        style={{
+          width: "100%",
+          padding: "0.75rem",
+          marginBottom: "1rem",
+          background: "#FEE500",
+          color: "#000",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
+        🗨️ 카카오로 시작하기
+      </button>
+
+      {/* 이메일 로그인 폼 */}
       <input
-        type="tel"
-        placeholder="+821012345678"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        type="email"
+        placeholder="이메일"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{ width: "100%", padding: "0.5rem", marginBottom: "0.75rem" }}
+      />
+      <input
+        type="password"
+        placeholder="비밀번호"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
       />
       <button
-        onClick={sendCode}
+        onClick={handleEmailLogin}
         style={{
           width: "100%",
-          padding: "0.5rem",
-          marginBottom: "1rem",
+          padding: "0.75rem",
           background: "#007BFF",
           color: "#fff",
           border: "none",
-          borderRadius: "4px"
+          borderRadius: "4px",
+          cursor: "pointer",
         }}
       >
-        코드 보내기
+        이메일로 로그인
       </button>
 
-      {verificationId && (
-        <>
-          <input
-            type="text"
-            placeholder="인증 코드 입력"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
-          />
-          <button
-            onClick={verifyCode}
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              background: "#007BFF",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px"
-            }}
-          >
-            인증 확인
-          </button>
-        </>
-      )}
-
-      {/* ReCAPTCHA 컨테이너 (invisible) */}
-      <div id="recaptcha-container"></div>
+      <p style={{ marginTop: "1rem" }}>
+        아직 계정이 없으신가요?{" "}
+        <a href="/signup" style={{ color: "#007BFF" }}>
+          회원가입하기
+        </a>
+      </p>
     </div>
   );
 }
