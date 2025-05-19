@@ -1,31 +1,55 @@
 // pages/index.tsx
-import Link from "next/link"
+import BottomTab from '../components/BottomTab';
 
 export default function Home() {
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>
-        🎉 맨라운지에 오신 걸 환영합니다 🎉
-      </h1>
-      <p style={{ fontSize: "1.25rem", marginBottom: "2rem" }}>
-        솔직한 이야기, 이제 맨라운지에서.
-      </p>
+    <div style={{ paddingBottom: '4rem' }}>
+      {/* 상단 타이틀 */}
+      <header style={{
+        padding: '1rem',
+        fontSize: '1.2rem',
+        fontWeight: 'bold',
+        borderBottom: '1px solid #ddd'
+      }}>
+        맨라운지
+      </header>
 
-      <Link href="/signup" passHref>
-        <button
-          style={{
-            backgroundColor: "#007BFF",
-            color: "#fff",
-            border: "none",
-            padding: "0.75rem 1.5rem",
-            fontSize: "1rem",
-            borderRadius: "0.375rem",
-            cursor: "pointer",
-          }}
-        >
-          서비스 시작하기
-        </button>
-      </Link>
+      {/* 게시글 리스트 */}
+      <main style={{ padding: '1rem' }}>
+        <div style={postStyle}>
+          <div style={tagStyle}>HOT</div>
+          <div style={{ fontWeight: 500 }}>요즘 감정 기복이 너무 심한데, 나만 그래?</div>
+          <div style={metaStyle}>익명 ・ 3시간 전 ・ 💬 12</div>
+        </div>
+        <div style={postStyle}>
+          <div style={tagStyle}>질문</div>
+          <div style={{ fontWeight: 500 }}>헬스장 처음 가보려는데 뭐부터 해야 해요?</div>
+          <div style={metaStyle}>익명 ・ 1일 전 ・ 💬 5</div>
+        </div>
+      </main>
+
+      {/* 하단 탭 */}
+      <BottomTab />
     </div>
-  )
+  );
 }
+
+const postStyle: React.CSSProperties = {
+  background: '#f9f9f9',
+  borderRadius: 8,
+  padding: '1rem',
+  marginBottom: '1rem',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+};
+
+const tagStyle: React.CSSProperties = {
+  fontSize: '0.75rem',
+  color: '#f44336',
+  marginBottom: 4
+};
+
+const metaStyle: React.CSSProperties = {
+  fontSize: '0.75rem',
+  color: '#777',
+  marginTop: 8
+};
