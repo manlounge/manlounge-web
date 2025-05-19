@@ -28,8 +28,8 @@ export default function Login() {
     }
   };
 
-  const handleSocial = (path: string) => {
-    window.location.href = path;
+  const handleSocial = (url: string) => {
+    window.location.href = url;
   };
 
   if (initializing) return <p>로딩 중...</p>;
@@ -55,16 +55,12 @@ export default function Login() {
           color: "#000",
           border: "none",
           borderRadius: "4px",
-          marginBottom: "1rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           fontSize: "1rem",
           cursor: "pointer",
+          marginBottom: "1rem",
         }}
       >
-        <span style={{ marginRight: "0.5rem" }}>💬</span>
-        카카오로 시작하기
+        카카오로 3초만에 시작하기
       </button>
 
       {/* 네이버 버튼 */}
@@ -77,19 +73,11 @@ export default function Login() {
           color: "#fff",
           border: "none",
           borderRadius: "4px",
-          marginBottom: "1rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           fontSize: "1rem",
           cursor: "pointer",
+          marginBottom: "1rem",
         }}
       >
-        <img
-          src="/icons/naver-logo.svg"
-          alt="Naver"
-          style={{ width: "24px", height: "24px", marginRight: "0.5rem" }}
-        />
         네이버로 시작하기
       </button>
 
@@ -113,7 +101,7 @@ export default function Login() {
         style={{
           width: "100%",
           padding: "0.75rem",
-          marginBottom: "0.75rem",
+          marginBottom: "1rem",
           border: "1px solid #ccc",
           borderRadius: "4px",
           fontSize: "1rem",
@@ -127,12 +115,13 @@ export default function Login() {
         style={{
           width: "100%",
           padding: "0.75rem",
-          marginBottom: "1rem",
+          marginBottom: "1.5rem",
           border: "1px solid #ccc",
           borderRadius: "4px",
           fontSize: "1rem",
         }}
       />
+
       <button
         onClick={handleEmailLogin}
         style={{
