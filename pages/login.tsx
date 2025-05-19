@@ -99,6 +99,7 @@ export default function Login() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         style={{
+          boxSizing: "border-box",
           width: "100%",
           padding: "0.75rem",
           marginBottom: "1rem",
@@ -113,6 +114,7 @@ export default function Login() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         style={{
+          boxSizing: "border-box",
           width: "100%",
           padding: "0.75rem",
           marginBottom: "1.5rem",
