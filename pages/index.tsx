@@ -3,7 +3,13 @@ import BottomTab from '../components/BottomTab';
 
 export default function Home() {
   return (
-    <div style={{ paddingBottom: '4rem' }}>
+    <div style={{
+      maxWidth: '480px',         // 모바일 최대폭
+      margin: '0 auto',          // 가운데 정렬
+      paddingBottom: '4rem',     // 하단탭 공간 확보
+      backgroundColor: '#fff',   // 카드 구분
+      minHeight: '100vh'
+    }}>
       {/* 상단 타이틀 */}
       <header style={{
         padding: '1rem',
@@ -28,7 +34,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* 하단 탭 */}
       <BottomTab />
     </div>
   );
