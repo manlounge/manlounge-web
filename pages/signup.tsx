@@ -1,77 +1,72 @@
 // pages/signup.tsx
-import { useState, useEffect } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig";
-import { useRouter } from "next/router";
+import React from 'react'
+import { useRouter } from 'next/router'
 
 export default function Signup() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [initializing, setInitializing] = useState(true);
-
-  // 이미 로그인된 사용자는 홈으로 이동
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) router.replace("/");
-      else setInitializing(false);
-    });
-    return () => unsub();
-  }, [router]);
-
-  const handleSignup = async () => {
-    setError("");
-
-    if (!email || !password || !confirmPassword) {
-      setError("모든 항목을 입력해주세요.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/");
-    } catch (e: any) {
-      setError(e.message);
-    }
-  };
-
-  if (initializing) return null;
+  const router = useRouter()
 
   return (
-    <div style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
-      <h1>회원가입</h1>
-      <input
-        type="email"
-        placeholder="이메일"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      />
-      <input
-        type="password"
-        placeholder="비밀번호"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      />
-      <input
-        type="password"
-        placeholder="비밀번호 확인"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      />
-      <button onClick={handleSignup} style={{ width: "100%", padding: 10 }}>
-        회원가입
+    <div style={{
+      maxWidth: 400,
+      margin: '4rem auto',
+      padding: '0 1rem',
+      textAlign: 'center'
+    }}>
+      <h1 style={{ marginBottom: '2rem', fontSize: '1.5rem' }}>
+        성인 남성만 가입할 수 있어요
+      </h1>
+
+      <button
+        onClick={() => window.location.href = '/api/auth/kakao'}
+        style={{
+          display: 'block',
+          width: '100%',
+          padding: '1rem',
+          marginBottom: '1rem',
+          background: '#F7E600',
+          border: 'none',
+          borderRadius: 4,
+          fontSize: '1rem',
+          cursor: 'pointer'
+        }}
+      >
+        카카오로 3초만에 시작하기
       </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <button
+        onClick={() => window.location.href = '/api/auth/naver'}
+        style={{
+          display: 'block',
+          width: '100%',
+          padding: '1rem',
+          marginBottom: '1rem',
+          background: '#03C75A',
+          border: 'none',
+          borderRadius: 4,
+          fontSize: '1rem',
+          color: '#fff',
+          cursor: 'pointer'
+        }}
+      >
+        네이버로 시작하기
+      </button>
+
+      <button
+        onClick={() => router.push('/signup-email')}
+        style={{
+          display: 'block',
+          width: '100%',
+          padding: '1rem',
+          background: '#0061F2',
+          border: 'none',
+          borderRadius: 4,
+          fontSize: '1rem',
+          color: '#fff',
+          cursor: 'pointer'
+        }}
+      >
+        이메일로 시작하기
+      </button>
     </div>
-  );
+  )
 }
