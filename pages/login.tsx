@@ -6,15 +6,15 @@ import { useRouter } from "next/router";
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [initializing, setInitializing] = useState(true);
+  const [init, setInit]         = useState(true);
 
   // 이미 로그인된 상태면 홈으로
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) router.replace("/");
-      else setInitializing(false);
+      else setInit(false);
     });
     return () => unsub();
   }, [router]);
@@ -28,77 +28,59 @@ export default function Login() {
     }
   };
 
-  const handleSocial = (path: string) => {
-    window.location.href = path;
+  const handleSocial = (url: string) => {
+    window.location.href = url;
   };
 
-  if (initializing) return <p>로딩 중...</p>;
+  if (init) return <p className="text-center py-4">로딩 중...</p>;
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "400px", margin: "auto", textAlign: "center" }}>
-      <h2>로그인</h2>
+    <div className="max-w-md mx-auto p-6">
+      <h2 className="text-2xl font-bold mb-6 text-center">로그인</h2>
 
-      {/* 소셜 로그인 버튼 */}
+      {/* 카카오 로그인 */}
       <button
-        className="w-full py-3 mb-4 bg-green-600 text-white rounded-md flex items-center justify-center"
+        className="w-full py-3 mb-4 bg-[#FEE500] text-black rounded-md"
         onClick={() => handleSocial("/api/auth/kakao")}
-        style={{
-          width: "100%",
-          padding: "0.75rem",
-          marginBottom: "1rem",
-          background: "#FEE500",
-          color: "#000",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
       >
-        🗨️ 카카오로 시작하기     
+        🗨️ 카카오로 시작하기
       </button>
+
+      {/* 네이버 로그인 */}
       <button
-  className="w-full py-3 mb-4 bg-green-600 text-white rounded-md flex items-center justify-center"
-  onClick={() => window.location.href = "/api/auth/naver"}
->
-  <img src="/icons/naver-logo.svg" alt="Naver" className="w-6 h-6 mr-2" />
-  네이버로 시작하기
-</button>
+        className="w-full py-3 mb-6 bg-green-600 text-white rounded-md flex items-center justify-center"
+        onClick={() => handleSocial("/api/auth/naver")}
+      >
+        {/* SVG 아이콘 파일 준비 후 <img src="/icons/naver-logo.svg" ... /> 로 대체 */}
+        ❏ 네이버로 시작하기
+      </button>
 
       {/* 이메일 로그인 폼 */}
       <input
         type="email"
         placeholder="이메일"
-        className="w-full p-2 mb-3 border rounded"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        style={{ width: "100%", padding: "0.5rem", marginBottom: "0.75rem" }}
+        className="w-full p-3 mb-4 border rounded"
       />
       <input
         type="password"
         placeholder="비밀번호"
-        className="w-full p-2 mb-3 border rounded"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
+        className="w-full p-3 mb-6 border rounded"
       />
+
       <button
-        className="w-full py-3 mb-4 bg-green-600 text-white rounded-md flex items-center justify-center"
+        className="w-full py-3 mb-4 bg-blue-600 text-white rounded-md"
         onClick={handleEmailLogin}
-        style={{
-          width: "100%",
-          padding: "0.75rem",
-          background: "#007BFF",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
       >
         이메일로 로그인
       </button>
 
-      <p style={{ marginTop: "1rem" }}>
+      <p className="text-center">
         아직 계정이 없으신가요?{" "}
-        <a href="/signup" style={{ color: "#007BFF" }}>
+        <a href="/signup" className="text-blue-600 hover:underline">
           회원가입하기
         </a>
       </p>
